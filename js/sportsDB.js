@@ -21,27 +21,30 @@ const fetchUrl = searchKey => {
         console.log(url);
         fetch(url)
             .then(res => res.json())
-            .then(data => displayPlayers(data.player))
+            .then(data => {
+                if (!data.player) {
+                    warningMessage('broken url');
+                }
+                else {
+                    displayPlayers(data.player);
+                }
+            })
     }
     else {
         warningMessage('Please search a player name.');
     }
 }
+
 const displayPlayers = (playerArr) => {
-    if (!playerArr) {
-        warningMessage('the player is not in database');
-    }
-    else {
-        // console.log('else');
-        console.log(cardParent);
-        cardParent.textContent = '';
-        playerArr?.forEach(function (player) {
-            console.log('playerArr', playerArr);
-            console.log(player);
-            const divCol = document.createElement('div');
-            // divCol.textContent = '';
-            divCol.classList.add('col');
-            divCol.innerHTML = `
+    const cardParent = document.getElementById('card-parent');
+    console.log('cardParent', cardParent);
+    cardParent.textContent = '';
+    playerArr?.forEach(function (player) {
+        console.log(player);
+        const divCol = document.createElement('div');
+        // divCol.textContent = '';
+        divCol.classList.add('col');
+        divCol.innerHTML = `
                      <div class="card">
                         <img src="${player.strThumb}" class="card-img-top" alt="player-img">
                         <div class="card-body">
@@ -50,11 +53,10 @@ const displayPlayers = (playerArr) => {
                         </div>
                     </div>
         `;
-            cardParent.append(divCol);
-        });
-    }
+        cardParent.appendChild(divCol);
+    });
+
 }
-const cardParent = document.getElementById('card-parent');
 const searchBtn = document.getElementById('serach-btn');
 const displaySection = document.getElementById('display-section');
 searchBtn.addEventListener('click', input);
